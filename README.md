@@ -1,7 +1,6 @@
 # 🖥️ Otomati APP
 
-[![Otomati APP CI/CD](https://github.com/JustinHung0407/otomati-app/actions/workflows/main.yml/badge.svg?branch=main)]
-(https://github.com/JustinHung0407/otomati-app/actions/workflows/main.yml/badge.svg?branch=main)
+[![Otomati APP CI/CD](https://github.com/JustinHung0407/otomati-app/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/JustinHung0407/otomati-app/actions/workflows/main.yml)
 
 Otomati APP help communicate with AI models in a more human-like way.
 
