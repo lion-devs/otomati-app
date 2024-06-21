@@ -4,3 +4,4 @@ __pycache__/
 secrets.toml
 .env
 .idea/
+faiss_db/
