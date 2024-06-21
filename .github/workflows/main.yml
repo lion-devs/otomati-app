@@ -1,0 +1,61 @@
+name: Otomati App testing
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  streamlit:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        #python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.12" ]
+        poetry-version: [ "1.8.3" ]
+        #os: [ ubuntu-22.04, macos-latest, windows-latest ]
+        os: [ ubuntu-22.04 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Python Poetry Action
+        uses: abatilo/actions-poetry@v3.0.0
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run tests
+        run: |
+          poetry run pytest -v
+
+#      Enable the following block to run Streamlit app testing
+#      The docs: https://docs.streamlit.io/develop/api-reference/app-testing
+#      - name: Streamlit health check
+#        uses: streamlit/streamlit-app-action@v0.0.3
+#        with:
+#          app-path: otomati_app/Home.py
+#          ruff: true
+#          pytest-args: -v --junit-xml=test-results.xml
+#
+#      - if: always()
+#        uses: pmeier/pytest-results-action@v0.6.0
+#        with:
+#          path: test-results.xml
+#          summary: true
+#          display-options: fEX
+#          fail-on-empty: false
+#          title: Pytest Results

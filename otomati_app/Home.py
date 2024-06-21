@@ -1,5 +1,3 @@
-import os
-
 import streamlit as st
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
@@ -13,9 +11,8 @@ load_dotenv()
 title = "Otomati APP"
 st.title(title)
 
-
 # Render sidebar and get the OpenAI API key
-openai_api_key = os.getenv("OPENAI_API_KEY") or render_sidebar()
+openai_api_key = render_sidebar()
 
 
 def generate_response(t):

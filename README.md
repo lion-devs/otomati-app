@@ -35,4 +35,13 @@ poetry publish
 
 ## Acknowledgements
 
-This project is based on [streamlit/llm-examples](https://github.com/streamlit/llm-examples) by Streamlit.
+This project was inspired by and includes code from the following repository:
+
+- [Streamlit llm-examples](https://github.com/streamlit/llm-examples) by [Streamlit](https://github.com/streamlit)
+  - Description: This project provided examples and utilities for integrating large language models with Streamlit applications.
+
+The code is used under the Apache 2.0 license. For more information, please refer to the LICENSE file in this repository and the original project's repository.
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
