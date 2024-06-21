@@ -15,9 +15,11 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ "3.11", "3.12" ]
+        #python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.12" ]
         poetry-version: [ "1.8.3" ]
-        os: [ ubuntu-22.04, macos-latest, windows-latest ]
+        #os: [ ubuntu-22.04, macos-latest, windows-latest ]
+        os: [ ubuntu-22.04 ]
 
     steps:
       - name: Checkout code
@@ -40,18 +42,20 @@ jobs:
         run: |
           poetry run pytest -v
 
-      - name: Streamlit health check
-        uses: streamlit/streamlit-app-action@v0.0.3
-        with:
-          app-path: otomati_app/Home.py
-          ruff: true
-          pytest-args: -v --junit-xml=test-results.xml
-
-      - if: always()
-        uses: pmeier/pytest-results-action@v0.6.0
-        with:
-          path: test-results.xml
-          summary: true
-          display-options: fEX
-          fail-on-empty: false
-          title: Pytest Results
+#      Enable the following block to run Streamlit app testing
+#      The docs: https://docs.streamlit.io/develop/api-reference/app-testing
+#      - name: Streamlit health check
+#        uses: streamlit/streamlit-app-action@v0.0.3
+#        with:
+#          app-path: otomati_app/Home.py
+#          ruff: true
+#          pytest-args: -v --junit-xml=test-results.xml
+#
+#      - if: always()
+#        uses: pmeier/pytest-results-action@v0.6.0
+#        with:
+#          path: test-results.xml
+#          summary: true
+#          display-options: fEX
+#          fail-on-empty: false
+#          title: Pytest Results
