@@ -1,4 +1,4 @@
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 
 
 def pdf_read(pdf_doc):
