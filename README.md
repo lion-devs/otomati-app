@@ -35,6 +35,25 @@ streamlit run otomati_app/Home.py
 poetry publish
 ```
 
+```shell
+docker build \
+  --platform=linux/amd64 \
+  --no-cache \
+  -t otomati-app:latest \
+  -f Dockerfile .
+```
+    
+```shell
+docker run -it -d \
+  --name otomati-app \
+  --platform=linux/amd64 \
+  -p 8009:8009 \
+  otomati:latest \
+  /bin/sh
+```
+
+
+
 ## Acknowledgements
 
 This project was inspired by and includes code from the following repository:

@@ -34,6 +34,7 @@ def generate_response(t):
 
 # Form for user input
 with st.form("my_form"):
+    st.write("This is a simple form to generate a joke about a topic.")
     topic = st.text_area("Enter a topic:", "programming")
     submitted = st.form_submit_button("Submit")
     if not openai_api_key:

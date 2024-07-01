@@ -5,3 +5,4 @@ secrets.toml
 .env
 .idea/
 faiss_db/
+dist/
