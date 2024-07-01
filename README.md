@@ -29,29 +29,35 @@ You can get your own OpenAI API key by following the following instructions:
 
 ## Run it locally
 
+To run the app locally, you can follow these steps:
 ```sh
 poetry install
 streamlit run otomati_app/Home.py
 poetry publish
 ```
 
-```shell
-docker build \
-  --platform=linux/amd64 \
-  --no-cache \
-  -t otomati-app:latest \
-  -f Dockerfile .
-```
-    
-```shell
-docker run -it -d \
-  --name otomati-app \
-  --platform=linux/amd64 \
-  -p 8009:8009 \
-  otomati:latest \
-  /bin/sh
-```
+or you can use the following command to run the app in a Docker container:
 
+- Build the Docker image:
+  ```shell
+  docker build \
+    --platform=linux/amd64 \
+    --progress=plain \
+    --no-cache \
+    -t otomati-app:latest \
+    -f Dockerfile .
+  ```
+
+- Run the Docker container:
+  ```shell
+  docker run -it -d \
+    --name otomati-app \
+    --platform=linux/amd64 \
+    -p 8501:8501 \
+    -v "$(pwd)/otomati_app/credentials.json:/app/otomati_app/credentials.json" \
+    otomati-app:latest \
+    /bin/sh
+  ```
 
 
 ## Acknowledgements

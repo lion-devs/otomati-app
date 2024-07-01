@@ -7,9 +7,13 @@ from langchain_openai import ChatOpenAI
 from otomati_app.utils.vector_store import load_vector_store
 
 
-def get_conversational_chain(tools, ques):
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0,
-                     api_key="sk-otomati-sa-f8GXS5Dei4S51UhBPrH9T3BlbkFJ5LaAdnM0fdRxUv5muwqs")
+def get_conversational_chain(tools, ques, key):
+    llm = ChatOpenAI(
+        openai_api_key=key,
+        model_name="gpt-3.5-turbo",
+        temperature=0,
+    )
+
     prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -30,7 +34,7 @@ def get_conversational_chain(tools, ques):
     st.write("Reply: ", response['output'])
 
 
-def user_input(user_question):
+def user_input(user_question, key):
     new_db = load_vector_store()
     retriever = new_db.as_retriever()
     retrieval_chain = create_retriever_tool(
@@ -38,4 +42,4 @@ def user_input(user_question):
         "pdf_extractor",
         "This tool is to give answers to queries from the PDF"
     )
-    get_conversational_chain(retrieval_chain, user_question)
+    get_conversational_chain(retrieval_chain, user_question, key)

@@ -1,0 +1,23 @@
+# Ignore all hidden files and directories
+.*
+# Ignore all log files
+*.log
+# Ignore Python cache files and directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Ignore environment variable files
+.env
+# Ignore local virtual environment directory
+.venv/
+# Ignore version control system directory
+.git/
+# Ignore Dockerfile and other Dockerfiles in the context
+Dockerfile
+# Ignore markdown files in the docs directory
+docs/*.md
+# Ignore specific sensitive information files
+otomati_app/credentials.json
+# Ignore vector database directory
+otomati_app/faiss_db/*

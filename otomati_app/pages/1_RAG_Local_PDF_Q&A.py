@@ -44,4 +44,4 @@ if st.session_state.processing_done:
     )
 
     if question:
-        user_input(question)
+        user_input(question, openai_api_key)
