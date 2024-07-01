@@ -17,7 +17,7 @@ def render_sidebar():
         )
 
         if key:
-            st.session_state.openai_api_key = key
+            st.session_state['openai_api_key'] = key
 
         st.markdown("[Get an OpenAI API key](https://platform.openai.com/account/api-keys)")
 

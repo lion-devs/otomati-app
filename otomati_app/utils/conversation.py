@@ -9,9 +9,9 @@ from otomati_app.utils.vector_store import load_vector_store
 
 def get_conversational_chain(tools, ques, key):
     llm = ChatOpenAI(
+        openai_api_key=key,
         model_name="gpt-3.5-turbo",
         temperature=0,
-        api_key=key,
     )
 
     prompt = ChatPromptTemplate.from_messages(

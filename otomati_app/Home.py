@@ -10,9 +10,9 @@ from otomati_app.components.sidebar import render_sidebar
 def generate_response(t, key):
     try:
         llm = ChatOpenAI(
-            api_key=key,
-            temperature=0,
+            openai_api_key=key,
             model="gpt-3.5-turbo",
+            temperature=0,
             max_retries=3,
         )
         prompt = ChatPromptTemplate.from_messages(
@@ -38,6 +38,9 @@ def main():
 
     # Render sidebar and get the OpenAI API key
     openai_api_key = render_sidebar()
+
+    if not openai_api_key:
+        st.warning("Please add your OpenAI API key to continue.")
 
     # Form for user input
     with st.form("my_form"):
