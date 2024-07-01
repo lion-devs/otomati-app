@@ -24,17 +24,22 @@ duckduckgo-search = "*"
 anthropic = ">=0.3.0"
 trubrics = ">=1.4.3"
 slack_sdk = ">=3.29.0"
+protobuf = "==3.20.*"
 
 streamlit = ">=1.28"
 streamlit-feedback = "*"
 
 faiss-cpu = "^1.8.0"
+chromadb = "^0.5.3"
 spacy = "^3.7.5"
-en-core-web-sm = {url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz"}
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz" }
+
 google-api-python-client = "^2.134.0"
 google-auth-httplib2 = "^0.2.0"
 google-auth-oauthlib = "^1.2.0"
 google-auth = "^2.30.0"
+pdfplumber = "^0.11.1"
+
 
 [tool.poetry.dev-dependencies]
 black = ">23.3.0"
