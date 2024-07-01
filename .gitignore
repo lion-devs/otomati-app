@@ -6,3 +6,4 @@ secrets.toml
 .idea/
 faiss_db/
 dist/
+credentials.json

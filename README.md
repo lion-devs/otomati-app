@@ -42,6 +42,7 @@ or you can use the following command to run the app in a Docker container:
   ```shell
   docker build \
     --platform=linux/amd64 \
+    --progress=plain \
     --no-cache \
     -t otomati-app:latest \
     -f Dockerfile .
@@ -52,8 +53,9 @@ or you can use the following command to run the app in a Docker container:
   docker run -it -d \
     --name otomati-app \
     --platform=linux/amd64 \
-    -p 8009:8009 \
-    otomati:latest \
+    -p 8501:8501 \
+    -v "$(pwd)/otomati_app/credentials.json:/app/otomati_app/credentials.json" \
+    otomati-app:latest \
     /bin/sh
   ```
 
