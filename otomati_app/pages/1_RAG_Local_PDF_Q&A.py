@@ -2,10 +2,10 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from otomati_app.components.sidebar import render_sidebar
-from otomati_app.utils.conversation import user_input
-from otomati_app.utils.pdf_processing import pdf_read
-from otomati_app.utils.text_processing import get_chunks
-from otomati_app.utils.vector_store import vector_store
+from otomati_app.services.conversation import user_input
+from otomati_app.data.pdf_processing import pdf_read
+from otomati_app.data.text_processing import get_chunks
+from otomati_app.services.vector_store import vector_store
 
 # Load environment variables from .env file
 load_dotenv()
