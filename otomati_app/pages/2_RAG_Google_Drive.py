@@ -9,18 +9,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from openai import AuthenticationError
 
-from otomati_app.components.sidebar import render_sidebar
+from otomati_app.components.sidebar import otsidebar
 from otomati_app.processer.google import download_file_from_google_drive, authenticate_with_google, list_drive_files
-
-
-# def read_pdf(file_content):
-#     all_text = ""
-#     with pdfplumber.open(file_content) as pdf:
-#         for page in pdf.pages:
-#             text = page.extract_text()
-#             if text:
-#                 all_text += text + "\n"
-#     return all_text
 
 
 def read_pdf(file_content):
@@ -85,14 +75,17 @@ def main():
     st.title('Upload from Google Drive')
     st.write('Click the button below to authenticate with Google and list your Google Drive files.')
 
-    openai_api_key = render_sidebar()
+    # Render sidebar and get the API key
+    otsidebar.render_sidebar()
+    selected_model = st.session_state['selected_model']
+    api_key = st.session_state['api_keys'][selected_model]
 
     # Check if the user is authenticated
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
 
-    if not openai_api_key:
-        st.warning("Please add your OpenAI API key to continue.")
+    if not api_key:
+        st.warning(f"Please add your {selected_model} API key to continue.")
 
     # Authenticate with Google Drive
     if st.button('Upload from Google Drive'):
@@ -102,7 +95,7 @@ def main():
             st.session_state.authenticated = True
 
     # List files in Google Drive
-    if st.session_state.authenticated and openai_api_key:
+    if st.session_state.authenticated and api_key:
         files = list_drive_files(
             st.session_state.creds,
             pageSize=50,
@@ -118,7 +111,7 @@ def main():
         file_options = st.multiselect('Select files or folders', list(file_dict.keys()))
 
         if st.button('Retrieve files'):
-            vectorstore = process_selected_files(file_options, file_dict, files, st.session_state.creds, openai_api_key)
+            vectorstore = process_selected_files(file_options, file_dict, files, st.session_state.creds, api_key)
             if vectorstore:
                 st.session_state.vectorstore = vectorstore
                 st.success("Files processed successfully.")
@@ -129,7 +122,7 @@ def main():
         if query:
             try:
                 llm = ChatOpenAI(
-                    openai_api_key=openai_api_key,
+                    openai_api_key=api_key,
                     model="gpt-3.5-turbo",
                     max_retries=3,
                 )

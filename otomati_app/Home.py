@@ -4,11 +4,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from openai import AuthenticationError
 
-from otomati_app.components.sidebar import render_sidebar
+from otomati_app.components.sidebar import otsidebar
 
 
-def generate_response(t, key):
+def generate_response(t, m, key):
     try:
+        st.info(f"Generating a joke about {t} using the {m} model.")
         llm = ChatOpenAI(
             openai_api_key=key,
             model="gpt-3.5-turbo",
@@ -36,11 +37,13 @@ def main():
     title = "Otomati APP"
     st.title(title)
 
-    # Render sidebar and get the OpenAI API key
-    openai_api_key = render_sidebar()
+    # Render sidebar and get the API key
+    otsidebar.render_sidebar()
+    selected_model = st.session_state['selected_model']
+    api_key = st.session_state['api_keys'][selected_model]
 
-    if not openai_api_key:
-        st.warning("Please add your OpenAI API key to continue.")
+    if not api_key:
+        st.warning(f"Please add your {selected_model} API key to continue.")
 
     # Form for user input
     with st.form("my_form"):
@@ -48,8 +51,8 @@ def main():
         topic = st.text_area("Enter a topic:", "programming")
         submitted = st.form_submit_button("Submit")
 
-        if submitted and openai_api_key:
-            generate_response(topic, openai_api_key)
+        if submitted and api_key:
+            generate_response(topic, selected_model, api_key)
 
 
 if __name__ == '__main__':

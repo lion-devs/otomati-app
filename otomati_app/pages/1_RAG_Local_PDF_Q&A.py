@@ -1,7 +1,7 @@
 import streamlit as st
 from dotenv import load_dotenv
 
-from otomati_app.components.sidebar import render_sidebar
+from otomati_app.components.sidebar import otsidebar
 from otomati_app.services.conversation import user_input
 from otomati_app.data.pdf_processing import pdf_read
 from otomati_app.data.text_processing import get_chunks
@@ -13,7 +13,10 @@ load_dotenv()
 st.set_page_config("Chat PDF")
 st.header("RAG based Chat with PDF")
 
-openai_api_key = render_sidebar()
+# Render sidebar and get the API key
+otsidebar.render_sidebar()
+selected_model = st.session_state['selected_model']
+api_key = st.session_state['api_keys'][selected_model]
 
 uploaded_files = st.file_uploader(
     "Upload your PDF Files and Click on the Submit & Process Button",
@@ -25,10 +28,10 @@ if 'processing_done' not in st.session_state:
 
 if not uploaded_files:
     st.warning("Please upload PDF files to continue.")
-if not openai_api_key:
-    st.warning("Please add your OpenAI API key to continue.")
+if not api_key:
+    st.warning(f"Please add your {selected_model} API key to continue.")
 
-if uploaded_files and openai_api_key:
+if uploaded_files and api_key:
     if st.button("Submit & Process"):
         with st.spinner("Processing..."):
             raw_text = pdf_read(uploaded_files)
@@ -44,4 +47,4 @@ if st.session_state.processing_done:
     )
 
     if question:
-        user_input(question, openai_api_key)
+        user_input(question, api_key)
