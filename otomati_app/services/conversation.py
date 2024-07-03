@@ -4,7 +4,7 @@ from langchain.tools.retriever import create_retriever_tool
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from otomati_app.utils.vector_store import load_vector_store
+from otomati_app.services.vector_store import load_vector_store
 
 
 def get_conversational_chain(tools, ques, key):

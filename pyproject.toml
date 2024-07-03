@@ -39,6 +39,7 @@ google-auth-httplib2 = "^0.2.0"
 google-auth-oauthlib = "^1.2.0"
 google-auth = "^2.30.0"
 pdfplumber = "^0.11.1"
+streamlit-oauth = "^0.1.9"
 
 
 [tool.poetry.dev-dependencies]

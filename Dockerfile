@@ -23,7 +23,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install poetry==${POETRY_VERSION}
 
 RUN poetry check
-RUN poetry install -vvv --no-root --no-dev
+RUN poetry install -vvv --no-dev
 
 FROM python:3.12.4-slim-bookworm
 
@@ -40,5 +40,4 @@ HEALTHCHECK CMD curl --fail http://localhost:$PORT/healthz || exit 1
 
 ENV PYTHONPATH=/app
 
-#ENTRYPOINT ["streamlit","run","otomati_app/Home.py","--server.port=${PORT:-8009}","--server.address=0.0.0.0"]
 ENTRYPOINT ["sh", "-c", "streamlit run otomati_app/Home.py --server.port=${PORT:-8501} --server.address=0.0.0.0"]

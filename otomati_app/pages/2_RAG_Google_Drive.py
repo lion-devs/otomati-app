@@ -1,12 +1,7 @@
-import io
-import os
 import tempfile
 
 import pdfplumber
 import streamlit as st
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseDownload
 from langchain import hub
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
@@ -14,89 +9,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from openai import AuthenticationError
 
-from otomati_app.components.sidebar import render_sidebar
-
-# Google Drive API scope
-SCOPES = [
-    'https://www.googleapis.com/auth/drive.metadata.readonly',
-    'https://www.googleapis.com/auth/drive.readonly',
-]
-REDIRECT_URI = 'http://localhost:8501'
-
-
-def authenticate_with_google():
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-    credentials_path = os.path.join(project_root, 'otomati_app', 'credentials.json')
-    # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps
-    flow = InstalledAppFlow.from_client_secrets_file(
-        credentials_path,
-        scopes=SCOPES,
-    )
-
-    # Get the authorization URL
-    auth_url, state = (
-        flow.authorization_url(
-            prompt='consent',
-            include_granted_scopes='true',
-            access_type='offline'
-        )
-    )
-
-    # Display the authorization URL in Streamlit
-    st.write("Please visit this URL to authorize this application:")
-    st.write(auth_url)
-
-    # Save the state to the session
-    st.session_state.state = state
-
-    creds = flow.run_local_server(
-        port=8080,
-        authorization_prompt_message='Please visit this URL: {url}',
-        success_message='The auth flow is complete; you may close this window.',
-        open_browser=True,
-    )
-
-    return creds
-
-
-def list_drive_files(creds, **kwargs):
-    # Build the service object for Drive API
-    service = build('drive', 'v3', credentials=creds)
-    # List files in the user's Google Drive
-    results = service.files().list(**kwargs).execute()
-    items = results.get('files', [])
-    return items
-
-
-def download_file_from_google_drive(file_id, mime_type, creds):
-    service = build('drive', 'v3', credentials=creds)
-    request = service.files().get_media(fileId=file_id)
-    fh = io.BytesIO()
-
-    if 'application/vnd.google-apps' in mime_type:
-        # Use export for Google Docs files
-        request = service.files().export_media(fileId=file_id, mimeType='application/pdf')
-    else:
-        # Use get_media for other files
-        request = service.files().get_media(fileId=file_id)
-
-    downloader = MediaIoBaseDownload(fh, request)
-    done = False
-    while not done:
-        status, done = downloader.next_chunk()
-        print("Download %d%%." % int(status.progress() * 100))
-    fh.seek(0)
-    return fh
-
-
-# def read_pdf(file_content):
-#     all_text = ""
-#     with pdfplumber.open(file_content) as pdf:
-#         for page in pdf.pages:
-#             text = page.extract_text()
-#             if text:
-#                 all_text += text + "\n"
-#     return all_text
+from otomati_app.components.sidebar import otsidebar
+from otomati_app.processer.google import download_file_from_google_drive, authenticate_with_google, list_drive_files
 
 
 def read_pdf(file_content):
@@ -161,14 +75,17 @@ def main():
     st.title('Upload from Google Drive')
     st.write('Click the button below to authenticate with Google and list your Google Drive files.')
 
-    openai_api_key = render_sidebar()
+    # Render sidebar and get the API key
+    otsidebar.render_sidebar()
+    selected_model = st.session_state['selected_model']
+    api_key = st.session_state['api_keys'][selected_model]
 
     # Check if the user is authenticated
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
 
-    if not openai_api_key:
-        st.warning("Please add your OpenAI API key to continue.")
+    if not api_key:
+        st.warning(f"Please add your {selected_model} API key to continue.")
 
     # Authenticate with Google Drive
     if st.button('Upload from Google Drive'):
@@ -178,7 +95,7 @@ def main():
             st.session_state.authenticated = True
 
     # List files in Google Drive
-    if st.session_state.authenticated and openai_api_key:
+    if st.session_state.authenticated and api_key:
         files = list_drive_files(
             st.session_state.creds,
             pageSize=50,
@@ -194,7 +111,7 @@ def main():
         file_options = st.multiselect('Select files or folders', list(file_dict.keys()))
 
         if st.button('Retrieve files'):
-            vectorstore = process_selected_files(file_options, file_dict, files, st.session_state.creds, openai_api_key)
+            vectorstore = process_selected_files(file_options, file_dict, files, st.session_state.creds, api_key)
             if vectorstore:
                 st.session_state.vectorstore = vectorstore
                 st.success("Files processed successfully.")
@@ -205,7 +122,7 @@ def main():
         if query:
             try:
                 llm = ChatOpenAI(
-                    openai_api_key=openai_api_key,
+                    openai_api_key=api_key,
                     model="gpt-3.5-turbo",
                     max_retries=3,
                 )
